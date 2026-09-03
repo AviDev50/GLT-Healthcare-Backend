@@ -1,1 +1,24 @@
+.env# dependencies
+node_modules/
+
+# environment variables
 .env
+.env.local
+.env.*.local
+
+# logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# build output (agar TypeScript ya build step use kar rahe ho)
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
