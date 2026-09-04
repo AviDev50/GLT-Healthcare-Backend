@@ -9,11 +9,10 @@ export async function getAdminByEmail(email) {
        password,
        status
      FROM admins
-     WHERE email = ?
+     WHERE email = ? AND deleted_at IS NULL
      LIMIT 1`,
     [email]
   );
-
   return rows[0];
 }
 
@@ -26,10 +25,9 @@ export async function getDoctorByEmail(email) {
        password,
        status
      FROM doctors
-     WHERE email = ?
+     WHERE email = ? AND deleted_at IS NULL
      LIMIT 1`,
     [email]
   );
-
   return rows[0];
 }
