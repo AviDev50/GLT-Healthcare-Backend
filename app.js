@@ -4,6 +4,8 @@ import cors from "cors";
 import authRoutes from "./src/modules/auth/auth.routes.js"
 import patientRoutes from "./src/modules/patients/patients.routes.js"
 import vitalsRoutes from "./src/modules/vitals/vitals.routes.js"
+import consultationRoutes from "./src/modules/consultations/consultations.routes.js";
+import doctorRoutes from "./src/modules/doctors/doctors.routes.js";
 
 const app = express();
 
@@ -13,6 +15,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/vitals", vitalsRoutes);
+app.use("/api/consultations", consultationRoutes);
+app.use("/api/doctors", doctorRoutes);
 
 // 404 handler
 app.use((req, res) => {

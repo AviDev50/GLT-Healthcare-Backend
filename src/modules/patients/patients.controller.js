@@ -11,20 +11,28 @@ export async function registerPatient(req, res) {
   }
 }
 
-export async function getPatientById(req, res) {
+export async function getPatient(req, res) {
   try {
-    const patient = await patientService.getPatientService(req.params.id);
+    const patient = await patientService.getPatientService(req.params.id, req.user);
     res.status(200).json({ success: true, data: patient });
   } catch (error) {
-    res.status(404).json({ success: false, message: error.message });
+    res.status(error.message.includes("not found") ? 404 : 403).json({ success: false, message: error.message });
   }
 }
 
 export async function listPatients(req, res) {
   try {
     const { page, limit, search } = req.query;
-    console.log(req.query)
     const patients = await patientService.listPatientsService({ page, limit, search });
+    res.status(200).json({ success: true, data: patients });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+}
+
+export async function listMyPatients(req, res) {
+  try {
+    const patients = await patientService.listMyPatientsService(req.user, req.query);
     res.status(200).json({ success: true, data: patients });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });

@@ -73,3 +73,15 @@ export async function softDeletePatient(patientId) {
   );
   return result.affectedRows;
 }
+
+export async function getPatientsAssignedToDoctor(doctorId, { limit, offset }) {
+  const [rows] = await db.query(
+    `SELECT DISTINCT p.* FROM patients p
+     INNER JOIN consultations c ON c.patient_id = p.patient_id
+     WHERE c.doctor_id = ? AND p.deleted_at IS NULL AND c.deleted_at IS NULL
+     ORDER BY p.created_at DESC
+     LIMIT ? OFFSET ?`,
+    [doctorId, Number(limit), Number(offset)]
+  );
+  return rows;
+}

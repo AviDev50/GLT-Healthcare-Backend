@@ -1,5 +1,7 @@
 import * as vitalsModel from "./vitals.model.js";
 import { getPatientById } from "../patients/patients.model.js";
+import { isDoctorAssignedToPatient } from "../consultations/consultations.model.js";
+
 
 function calculateBMI(weight, height) {
   // weight in kg, height in cm
@@ -60,11 +62,19 @@ export async function getVitalsService(vitalId) {
   return vitals;
 }
 
-export async function getPatientVitalsService(patientId) {
+export async function getPatientVitalsService(patientId, requester) {
   const patient = await getPatientById(patientId);
   if (!patient) {
     throw new Error("Patient not found");
   }
+
+  if (requester.role === "doctor") {
+    const assigned = await isDoctorAssignedToPatient(requester.doctor_id, patientId);
+    if (!assigned) {
+      throw new Error("You are not assigned to this patient");
+    }
+  }
+
   return vitalsModel.getVitalsByPatient(patientId);
 }
 

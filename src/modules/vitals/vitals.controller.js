@@ -22,10 +22,10 @@ export async function getVitalsById(req, res) {
 
 export async function getPatientVitals(req, res) {
   try {
-    const vitals = await vitalsService.getPatientVitalsService(req.params.patientId);
+    const vitals = await vitalsService.getPatientVitalsService(req.params.patientId, req.user);
     res.status(200).json({ success: true, data: vitals });
   } catch (error) {
-    res.status(404).json({ success: false, message: error.message });
+    res.status(error.message.includes("not found") ? 404 : 403).json({ success: false, message: error.message });
   }
 }
 

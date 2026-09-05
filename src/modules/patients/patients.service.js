@@ -1,4 +1,5 @@
 import * as patientModel from "./patients.model.js";
+import { isDoctorAssignedToPatient } from "../consultations/consultations.model.js";
 
 const VALID_GENDERS = ["Male", "Female", "Other"];
 
@@ -26,12 +27,27 @@ export async function registerPatientService(data, registeredBy) {
   return patientModel.getPatientById(patientId);
 }
 
-export async function getPatientService(patientId) {
+// getPatientService — ab requester leta hai, ownership check karta hai
+export async function getPatientService(patientId, requester) {
   const patient = await patientModel.getPatientById(patientId);
   if (!patient) {
     throw new Error("Patient not found");
   }
+
+  if (requester.role === "doctor") {
+    const assigned = await isDoctorAssignedToPatient(requester.doctor_id, patientId);
+    if (!assigned) {
+      throw new Error("You are not assigned to this patient");
+    }
+  }
+
   return patient;
+}
+
+// naya — sirf doctor ke apne patients
+export async function listMyPatientsService(requester, { page = 1, limit = 20 }) {
+  const offset = (page - 1) * limit;
+  return patientModel.getPatientsAssignedToDoctor(requester.doctor_id, { limit, offset });
 }
 
 export async function listPatientsService({ page = 1, limit = 20, search }) {
